@@ -20,7 +20,7 @@ const Home = () => {
         }}
       >
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <img src="Assets/meru123.webp" alt="" />
+          <img src="Assets/meru123.webp" alt="" className="w-20 lg:w-32" />
         </div>
         <p className="main-heading">Write Up Tool</p>
         <div className="createBtn">
@@ -52,7 +52,7 @@ const Home = () => {
         <Content />
       </div>
       <div>
-        <Link to="/test">test</Link>
+        <Link to="/test" className="textarea_btn">Test</Link>
       </div>
     </div>
   );
