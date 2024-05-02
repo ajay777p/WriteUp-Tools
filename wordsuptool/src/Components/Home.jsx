@@ -16,7 +16,7 @@ const Home = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "20px",
+         
         }}
       >
         <div style={{ display: "flex", justifyContent: "center" }}>
