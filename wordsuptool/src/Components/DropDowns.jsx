@@ -1,15 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const DropDowns = () => {
+  const [intro, setIntro] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://192.168.0.131:8005/intro");
+        
+        const data = await response.json();
+        setIntro(data); 
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+    console.log(intro);
+  }, [intro]);
+
   return (
     <div className="main_dropdown">
       <div className="secs_conatainer">
         <div className="into_container">
-          <select name="" id="">
+          <select name="intro" id="introSelect" >
             <option value="">Introduction</option>
-            <option value="">Ramesh</option>
-            <option value="">Nitesh</option>
-            <option value="">avinash</option>
+            {intro.map((item) => (
+              <option key={item.id} value={item.tag}>
+                {item.tag}
+              </option>
+            ))}
           </select>
         </div>
         <div className="Country_container">
