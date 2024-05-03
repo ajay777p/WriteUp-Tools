@@ -1,16 +1,46 @@
 const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-
 const app = express();
+const cors = require("cors");
+const bodyParser = require("body-parser");
+
+// Middleware for parsing JSON request bodies
+app.use(bodyParser.json());
 app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+let tags = [];
 
-const PORT = process.env.PORT || 8000;
+// POST - Create
+app.post('/intro', (req, res) => {
+  console.log('Received POST request body:', req.body);
+  // ...
+})
 
-app.get("/", (req, res) => {
-  res.json({ message: "server is runningg" });
+// GET - Read
+app.get('/', (req, res) => {
+  res.send('Server is running');
 });
 
+// PUT - Update
+
+
+// DELETE - Delete
+app.delete("/intro/:id", (req, res) => {
+  const { id } = req.params;
+  const index = tags.findIndex((tag) => tag.id === id);
+  if (index !== -1) {
+    tags.splice(index, 1);
+    res.sendStatus(204);
+  } else {
+    res.status(404).json({ error: "Tag not found" });
+  }
+});
+
+const PORT = process.env.PORT || 8005;
 app.listen(PORT, () => {
-  console.log("server is running");
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
