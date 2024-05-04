@@ -27,7 +27,7 @@ const Home = () => {
           <Link to="/create">Create </Link>
         </div>
       </div>
-      <div className="main_boxes">
+      <div className="main_boxes " >
         <div className="dropdown_container">
           <Textarea />
         </div>

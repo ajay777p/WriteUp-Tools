@@ -6,6 +6,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Create = () => {
   const [data, setData] = useState([]);
+  const [isExpanded, setIsExpanded] = useState({});
+  const handleExpand = (index) => {
+    setIsExpanded((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index],
+    }));
+  };
   const [newTag, setNewTag] = useState({
     section: "",
     tag: "",
@@ -61,30 +68,38 @@ const Create = () => {
     setNewTag({ section, tag, description });
   };
   
-  const handleUpdate = async (section, tag, description) => {
+  const handleUpdate = async (tag) => {
+    console.log("Updated newTag state:", newTag);
     try {
       const updatedTag = { ...newTag };
+      console.log("Updated description:", updatedTag.description);
       const response = await fetch(`http://192.168.0.131:8005/update/${tag}`, {
         method: 'PUT',
         headers: {
-          'Accept': 'application/json',
+          'accept': 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ update: updatedTag.description })
       });
+  
       if (response.ok) {
         const updatedData = data.map(item => {
-          if (item.section === section && item.tag === tag) {
+          if (item.tag === tag) {
             return {
-              section: updatedTag.section,
-              tag: updatedTag.tag,
-              description: updatedTag.description
+              ...item,
+              ...updatedData,
+              description:updatedData.description 
+              
             };
           }
           return item;
         });
-        setData(updatedData);
+        
+  
+        setData(updatedData); 
+        console.log("Updated data state:", updatedData);
         setEditTag(null);
+        setNewTag({ section: "", tag: "", description: "" });
         toast.success('Tag updated successfully', {
           position: "top-right",
           autoClose: 3000,
@@ -214,12 +229,40 @@ const Create = () => {
               <th scope="col">Action</th>
             </tr>
           </thead>
-          <tbody className="text-sm p-1">
+          <tbody className="text-sm  ">
             {data.map((item, index) => (
-              <tr key={index} className="border-b">
-                <td className="font-normal">{item.section}</td>
-                <td className="font-normal">{item.tag}</td>
-                <td className="font-normal p-1 max-w-72 text-[12px]">{item.description}</td>
+              <tr key={index} className="border-b ">
+                <td className="font-normal p-1">{item.section}</td>
+                <td className="font-normal p-1">{item.tag}</td>
+                <td className="font-normal p-1 max-w-72 text-[12px]">
+        {item.description.length > 60 ? (
+          <>
+            {isExpanded[index] ? (
+              <>
+                {item.description}
+                <span
+                  className="text-red-600 cursor-pointer p-3 font-medium"
+                  onClick={() => handleExpand(index)}
+                >
+                   ...Less
+                </span>
+              </>
+            ) : (
+              <>
+                {item.description.slice(0, 60)}
+                <span
+                  className="text-blue-600 cursor-pointer p-3 font-medium"
+                  onClick={() => handleExpand(index)}
+                >
+                  More...
+                </span>
+              </>
+            )}
+          </>
+        ) : (
+          item.description
+        )}
+      </td>
                 <td className="flex flex-wrap p-5 font-normal text-sm justify-center lg:font-medium">
                 <button
   className="bg-blue-500 rounded-lg text-white py-1 w-14 lg:px-3 m-1"
